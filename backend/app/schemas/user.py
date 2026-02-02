@@ -12,5 +12,5 @@ class UserRead(BaseModel):
     name: str
     email: EmailStr
 
-    class Config:
-        orm_mode = True  # Allows SQLAlchemy model to be converted to Pydantic
+class Config:
+    from_attributes = True
