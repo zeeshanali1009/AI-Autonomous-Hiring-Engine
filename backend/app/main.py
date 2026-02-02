@@ -1,40 +1,22 @@
-# main.py
 from fastapi import FastAPI
-from pathlib import Path
 from dotenv import load_dotenv
 import os
-import logging
 
-# ----------------------------
-# Load .env file explicitly
-# ----------------------------
-env_path = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(dotenv_path=env_path)
+# Load environment variables from .env
+load_dotenv()
 
-# ----------------------------
-# Logging setup
-# ----------------------------
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+APP_NAME = os.getenv("APP_NAME") or "Default App Name"
+APP_VERSION = os.getenv("APP_VERSION") or "0.1.0"
 
-# ----------------------------
-# Create FastAPI app
-# ----------------------------
 app = FastAPI(
-    title=os.getenv("APP_NAME", "AI Autonomous Hiring Engine"),
-    version=os.getenv("APP_VERSION", "0.0.1"),
-    description="Enterprise-grade AI hiring platform"
+    title=APP_NAME,
+    version=APP_VERSION
 )
 
-# ----------------------------
-# Include modular routes
-# ----------------------------
-from app.routes.root import router as root_router
-app.include_router(root_router)
+# Import routers
+from backend.app.routes.user import router as user_router
+app.include_router(user_router)
 
-# ----------------------------
-# Startup event
-# ----------------------------
-@app.on_event("startup")
-def startup_event():
-    logger.info(f"{os.getenv('APP_NAME')} backend is starting up... 🚀")
+@app.get("/")
+def root():
+    return {"message": f"{APP_NAME} backend is running 🚀"}
